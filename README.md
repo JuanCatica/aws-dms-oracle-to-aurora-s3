@@ -128,7 +128,7 @@ dgen config -l = <oracledb-source.XXXXXXXXX.region.rds.amazonaws.com> \
     -x = <userpassword> 
 ```
 
-Then we can execute the inicialization of the schema implemented with **dgen** with:
+Then we can execute the inicialization of the schema implemented by **dgen** using:
 
 ```bash
 dgen init
@@ -144,7 +144,7 @@ We can print the information related to each table using:
 dgen data
 ```
 
-And also we can populate tables using the following command (we will inser data only in table 1):
+And also we can populate tables using the following command (we will insert data only in table 1):
 
 ```bash
 dgen insert -t table1 -n 10 -b 1,2,3 
@@ -158,7 +158,7 @@ The project **dgen** use a variable called **block** on each table, this variabl
 
 Those tags can also be used to identify and execute Updates or Delete actions over the registers which contain them. We can use ```dgen delete -t table1 -b 1,2``` to delete register that contain block ```1``` or ```2```, and also use ```dgen update -t table1 -b 1 -m 'update-message'``` to update registers with block equals to ```1``` and change the value of the ```cdc``` variable.
 
-To learn more about the **dgen** command please go to the [documentation](().
+To learn more about the **dgen** command please go to the [documentation](https://github.com/JuanCatica/dgen).
 
 ## 6. Test endpoints
 
