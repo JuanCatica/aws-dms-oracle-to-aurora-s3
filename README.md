@@ -150,7 +150,7 @@ And also we can populate tables using the following command (we will insert data
 dgen insert -t table1 -n 10 -b 1,2,3 
 ```
 
-In this example the argument ```-t``` is used to define the table, ```-t``` is used to define the number of new rows to create and ```-b``` is used to define the blocks we need. Finally, we can print again the information of each table using ```dgen data```.
+In this example the argument ```-t``` is used to define the table, ```-n``` is used to define the number of new rows to create and ```-b``` is used to define the blocks we need. Finally, we can print again the information of each table using ```dgen data```.
 
 **Important:**
 
