@@ -24,8 +24,10 @@ Create an EC2 instance with AWS Linux 2 AMI manually and connect to the instance
 To configure the EC2 instance, please download ```oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm``` from [this site](https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html). Once you have downloaded the file, proceed with the installation:
 
 ```bash
+sudo yum update -y
 sudo yum install oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm
 sudo sh -c "echo /usr/lib/oracle/12.2/client64/lib > /etc/ld.so.conf.d/oracle-instantclient.conf"
+sudo yum install git -y
 sudo ldconfig
 export LD_LIBRARY_PATH=/usr/lib/oracle/12.2/client64/lib:$LD_LIBRARY_PATH
 python3 -m pip install cx_Oracle pandas --upgrade --user
@@ -35,7 +37,14 @@ python3 -m pip install cx_Oracle pandas --upgrade --user
 
 ### Download dgen
 
-Go to the **dgen** repository.
+Download the **dgen** project from its repository. The steps shown in the dgen repository to install and configure this tool are the same we are executin here in 'Create and Configure an EC2 Instance'
+
+```bash
+cd $HOME
+git clone <this-repo>
+echo 'export $PATH:"<path-to-the-bin-folder-of-dgen>"' >> .bashrc
+source .bashrc
+```
 
 ### Create AMI
 
@@ -109,6 +118,47 @@ terraform apply -var-file=vars.tfvars -auto-approve
 ```
 
 ## 5. Preload
+
+In this step we have define the credencials used to connect to the Oracle database using:
+
+```bash
+dgen config -l = <oracledb-source.XXXXXXXXX.region.rds.amazonaws.com> \
+    -s = <SID> \
+    -u = <username> \
+    -x = <userpassword> 
+```
+
+Then we can execute the inicialization of the schema implemented with **dgen** with:
+
+```bash
+dgen init
+```
+
+This action will create 3 tables with the following schema:
+
+![dms-architecture](imgs/dgen-schema.png)
+
+We can print the information related to each table using: 
+
+```bash
+dgen data
+```
+
+And also we can populate tables using the following command (we will inser data only in table 1):
+
+```bash
+dgen insert -t table1 -n 10 -b 1,2,3 
+```
+
+In this example the argument ```-t``` is used to define the table, ```-t``` is used to define the number of new rows to create and ```-b``` is used to define the blocks we need. Finally, we can print again the information of each table using ```dgen data```.
+
+**Important:**
+
+The project **dgen** use a variable called **block** on each table, this variable is used to create tags over registers while using ```dgen insert``` using the argument ```-b```.
+
+Those tags can also be used to identify and execute Updates or Delete actions over the registers which contain them. We can use ```dgen delete -t table1 -b 1,2``` to delete register that contain block ```1``` or ```2```, and also use ```dgen update -t table1 -b 1 -m 'update-message'``` to update registers with block equals to ```1``` and change the value of the ```cdc``` variable.
+
+To learn more about the **dgen** command please go to the [documentation](().
 
 ## 6. Test endpoints
 
